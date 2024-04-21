@@ -1,44 +1,42 @@
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
 import time
 
-# Function to scrape website and extract first row of the table
-def scrape_table_first_row(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    # Find the table element
-    table = soup.find('table')
-    
-    # Extract the first row of the table
-    first_row = table.find('tr')
-    
-    # Extract data from the cells of the first row
-    data = []
-    for cell in first_row.find_all('td'):
-        data.append(cell.text.strip())
-    
-    return data
+def login_to_website(username, password):
+    # Perform login (replace with actual login logic)
+    session = requests.session()
+    login_data = {
+        'username': username,
+        'password': password
+    }
+    response = session.post('https://example.com/login', data=login_data)
+    return session
 
-# Function to write content to Excel
-def write_to_excel(data):
-    df = pd.DataFrame(data, columns=['Content'])
-    df.to_excel('table_first_row.xlsx', index=False)
+def extract_information(session):
+    # Extract information from the webpage (replace with actual scraping logic)
+    response = session.get('https://example.com/dashboard')
+    soup = BeautifulSoup(response.content, 'html.parser')
+    # Find the table containing the data
+    table = soup.find('table', class_='your_table_class')  # Replace 'your_table_class' with the actual class of the table
+    # Find all rows in the table body (tbody) except the first one (skipping the header)
+    rows = table.find('tbody').find_all('tr')[1:]
+    # Extract the text from the first row
+    first_row = rows[0].text.strip()
+    return first_row
 
-# Main function
-def main():
-    url = 'https://example.com/table_page'  # Replace with the URL of the page containing the table
+def write_to_file(information):
+    # Write extracted information to a file
+    with open('information.txt', 'a') as file:
+        file.write(information + '\n')
+
+if __name__ == '__main__':
+    # Replace 'username' and 'password' with actual login credentials
+    username = 'your_username'
+    password = 'your_password'
     
     while True:
-        # Scrape table and extract first row
-        first_row_data = scrape_table_first_row(url)
-        
-        # Write first row data to Excel
-        write_to_excel({'Content': first_row_data})
-        
-        # Wait for 3 minutes
-        time.sleep(180)
-
-if __name__ == "__main__":
-    main()
+        session = login_to_website(username, password)
+        information = extract_information(session)
+        write_to_file(information)
+        print('Information written to file:', information)
+        time.sleep(180)  # 3 minutes (180 seconds)
