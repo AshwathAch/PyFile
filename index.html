@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Motor Control</title>
+</head>
+<body>
+    <h1>Control the Motor</h1>
+    <button onclick="sendCommand('forward')">Forward</button>
+    <button onclick="sendCommand('reverse')">Reverse</button>
+
+    <script>
+        function sendCommand(action) {
+            // Send a GET request to the Raspberry Pi server with the specified action
+            fetch(`/control_motor?action=${action}`)
+                .then(response => {
+                    if (response.ok) {
+                        console.log(`Motor ${action} command sent`);
+                    } else {
+                        console.error(`Failed to send motor ${action} command`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>
