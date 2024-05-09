@@ -1,77 +1,61 @@
 import RPi.GPIO as GPIO
-from time import sleep
+import time
 
 # Define GPIO pins connected to the L298N motor driver inputs
-# Motor A
-motorA_enable_pin = 17  # GPIO pin for ENA
-motorA_in1_pin = 18      # GPIO pin for IN1
-motorA_in2_pin = 27      # GPIO pin for IN2
+ENA = 17  # GPIO pin for ENA
+IN1 = 22  # GPIO pin for IN1
+IN2 = 23  # GPIO pin for IN2
+ENB = 18  # GPIO pin for ENB
+IN3 = 24  # GPIO pin for IN3
+IN4 = 25  # GPIO pin for IN4
 
-# Motor B
-motorB_enable_pin = 22  # GPIO pin for ENB
-motorB_in1_pin = 23      # GPIO pin for IN3
-motorB_in2_pin = 24      # GPIO pin for IN4
+# Setup GPIO mode and warnings
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
-def setup_gpio():
-    # Set up GPIO mode and warnings
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
+# Setup GPIO pins for motor control (output)
+GPIO.setup(ENA, GPIO.OUT)
+GPIO.setup(IN1, GPIO.OUT)
+GPIO.setup(IN2, GPIO.OUT)
+GPIO.setup(ENB, GPIO.OUT)
+GPIO.setup(IN3, GPIO.OUT)
+GPIO.setup(IN4, GPIO.OUT)
 
-    # Set up motor A pins
-    GPIO.setup(motorA_enable_pin, GPIO.OUT)
-    GPIO.setup(motorA_in1_pin, GPIO.OUT)
-    GPIO.setup(motorA_in2_pin, GPIO.OUT)
+def motor_forward():
+    GPIO.output(IN1, GPIO.HIGH)
+    GPIO.output(IN2, GPIO.LOW)
+    GPIO.output(ENA, GPIO.HIGH)  # Enable Motor A
+    GPIO.output(IN3, GPIO.HIGH)
+    GPIO.output(IN4, GPIO.LOW)
+    GPIO.output(ENB, GPIO.HIGH)  # Enable Motor B
+    print("Motors Forward")
 
-    # Set up motor B pins
-    GPIO.setup(motorB_enable_pin, GPIO.OUT)
-    GPIO.setup(motorB_in1_pin, GPIO.OUT)
-    GPIO.setup(motorB_in2_pin, GPIO.OUT)
+def motor_reverse():
+    GPIO.output(IN1, GPIO.LOW)
+    GPIO.output(IN2, GPIO.HIGH)
+    GPIO.output(ENA, GPIO.HIGH)  # Enable Motor A
+    GPIO.output(IN3, GPIO.LOW)
+    GPIO.output(IN4, GPIO.HIGH)
+    GPIO.output(ENB, GPIO.HIGH)  # Enable Motor B
+    print("Motors Reverse")
 
-def motor_a_forward():
-    GPIO.output(motorA_in1_pin, GPIO.HIGH)
-    GPIO.output(motorA_in2_pin, GPIO.LOW)
-    GPIO.output(motorA_enable_pin, GPIO.HIGH)  # Enable motor A
+def motor_stop():
+    GPIO.output(ENA, GPIO.LOW)  # Disable Motor A
+    GPIO.output(ENB, GPIO.LOW)  # Disable Motor B
+    print("Motors Stopped")
 
-def motor_a_backward():
-    GPIO.output(motorA_in1_pin, GPIO.LOW)
-    GPIO.output(motorA_in2_pin, GPIO.HIGH)
-    GPIO.output(motorA_enable_pin, GPIO.HIGH)  # Enable motor A
+try:
+    motor_forward()
+    time.sleep(2)  # Motors run forward for 2 seconds
+    motor_stop()
+    time.sleep(1)
 
-def motor_b_forward():
-    GPIO.output(motorB_in1_pin, GPIO.HIGH)
-    GPIO.output(motorB_in2_pin, GPIO.LOW)
-    GPIO.output(motorB_enable_pin, GPIO.HIGH)  # Enable motor B
+    motor_reverse()
+    time.sleep(2)  # Motors run reverse for 2 seconds
+    motor_stop()
+    time.sleep(1)
 
-def motor_b_backward():
-    GPIO.output(motorB_in1_pin, GPIO.LOW)
-    GPIO.output(motorB_in2_pin, GPIO.HIGH)
-    GPIO.output(motorB_enable_pin, GPIO.HIGH)  # Enable motor B
-
-def stop_motors():
-    # Disable both motors
-    GPIO.output(motorA_enable_pin, GPIO.LOW)
-    GPIO.output(motorB_enable_pin, GPIO.LOW)
-
-def cleanup_gpio():
-    GPIO.cleanup()
-
-if __name__ == '__main__':
-    try:
-        setup_gpio()
-
-        # Example: Turn Motor A forward for 3 seconds
-        print("Turning Motor A forward...")
-        motor_a_forward()
-        sleep(3)  # Motor A runs for 3 seconds
-        stop_motors()
-
-        # Example: Turn Motor B backward for 2 seconds
-        print("Turning Motor B backward...")
-        motor_b_backward()
-        sleep(2)  # Motor B runs for 2 seconds
-        stop_motors()
-
-    except KeyboardInterrupt:
-        print("\nExiting program...")
-    finally:
-        cleanup_gpio()
+except KeyboardInterrupt:
+    print("\nExiting program...")
+finally:
+    GPIO.cleanup()  # Clean up GPIO pins on program exit
