@@ -1,83 +1,16 @@
-import cv2, os, sys, pickle
 import time
 import numpy as np
 import RPi.GPIO as GPIO
-import serial
-ser1 = serial.Serial('/dev/ttyUSB0',9600,timeout=0.5)
-motor_relay1=2
-motor_relay2=3
-motor_relay3=4
-motor_relay4=17
 
-
-full_relay1=27
-full_relay2=22
-
-center_relay1=10
-center_relay2=9
-
-height_relay1=19
-height_relay2=26
-
-
-
-limit1=21
-limit2=20
-
-limit3=6
-limit4=13
-
-limit5=23
-
-CAMERA1=11
-CAMERA2=0
-
-
+enA=2
+IN1=3
+IN2=4
+enB=17
+IN1=27
+IN2=22
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(CAMERA1,  GPIO.OUT)
-GPIO.setup(CAMERA2,  GPIO.OUT)
-
-GPIO.setup(motor_relay1, GPIO.OUT)
-GPIO.setup(motor_relay2, GPIO.OUT)
-GPIO.setup(motor_relay3, GPIO.OUT)
-GPIO.setup(motor_relay4, GPIO.OUT)
-
-GPIO.setup(full_relay1,  GPIO.OUT)
-GPIO.setup(full_relay2,  GPIO.OUT)
-
-GPIO.setup(center_relay1, GPIO.OUT)
-GPIO.setup(center_relay2, GPIO.OUT)
-
-GPIO.setup(height_relay1, GPIO.OUT)
-GPIO.setup(height_relay2, GPIO.OUT)
-
-
-GPIO.output(CAMERA1, False)
-GPIO.output(CAMERA2, False)
-
-GPIO.output(motor_relay1, False)
-GPIO.output(motor_relay2, False)
-GPIO.output(motor_relay3, False)
-GPIO.output(motor_relay4, False)
-
-
-GPIO.output(center_relay1, False)
-GPIO.output(center_relay2, False)
-
-GPIO.output(height_relay1, False)
-GPIO.output(height_relay2, False)
-
-
-GPIO.output(full_relay1, False)
-GPIO.output(full_relay2, False)
-
-GPIO.setup(limit1, GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(limit2, GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(limit3, GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(limit4, GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(limit5, GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
 def motor_forward():
     
