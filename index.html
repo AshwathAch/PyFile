@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predict Colour and Price</title>
+</head>
+<body>
+    <h1>Predict Next Colour and Price</h1>
+    <form action="/" method="post">
+        <label for="period">Period:</label>
+        <input type="text" id="period" name="period" required><br><br>
+        <label for="price">Price:</label>
+        <input type="text" id="price" name="price" required><br><br>
+        <label for="colour">Colour (red/green):</label>
+        <input type="text" id="colour" name="colour" required><br><br>
+        <label for="date">Date (YYYY-MM-DD):</label>
+        <input type="text" id="date" name="date" required><br><br>
+        <label for="number">Number:</label>
+        <input type="text" id="number" name="number" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if prediction_colour and prediction_price %}
+    <h2>Prediction Results:</h2>
+    <p>Predicted Colour: {{ prediction_colour }}</p>
+    <p>Predicted Price: {{ prediction_price }}</p>
+    {% endif %}
+</body>
+</html>
